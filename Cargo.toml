@@ -1,5 +1,6 @@
 [package]
 name = "steam-auth"
+authors = ["Matt Taylor"]
 version = "0.1.0"
 edition = "2018"
 readme = "README.md"
@@ -8,7 +9,7 @@ description = "Allows you to implement a 'login with steam' feature on your webs
 repository = "https://github.com/64/steam-auth"
 documentation = "https://docs.rs/steam-auth"
 keywords = ["steam", "login", "authentication", "authenticate", "openid"]
-categories = ["authentication", "asynchronous", "network-programming", "web-programming::http-server"]
+categories = ["authentication", "asynchronous", "network-programming", "web-programming"]
 
 [dependencies]
 reqwest = "0.9.18"
