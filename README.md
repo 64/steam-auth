@@ -5,6 +5,8 @@
 
 Allows you to implement a 'login with steam' feature on your website.
 
+WIP REWRITE BRANCH
+
 ### Usage
 
 First, obtain the URL to which users should be redirected to start the login process:
