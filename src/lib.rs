@@ -26,6 +26,10 @@
 //! There's also an asynchronous variant on `steam_auth::verify_response_async`.
 //!
 //! See the [example server](https://github.com/64/steam-auth/blob/master/examples/server.rs) for more details.
+//!
+//! If you have an idea for how to demote the reqwest crate to an optional dependency, please send
+//! an issue or a pull request! I've made a first draft at an API on the
+//! [no-reqwest](https://github.com/64/steam-auth/tree/no-reqwest), but it's not functional yet.
 
 #[macro_use]
 extern crate serde_derive;
