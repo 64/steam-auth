@@ -15,5 +15,5 @@ before_script:
 script:
         - cargo build --verbose 
         - cargo clippy
-        - cargo fmt --check
+        - cargo fmt -- --check
         - cargo test --verbose
