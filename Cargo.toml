@@ -1,0 +1,26 @@
+[package]
+name = "steam-auth"
+version = "0.1.0"
+edition = "2018"
+readme = "README.md"
+license = "MIT"
+description = "Allows you to implement a 'login with steam' feature on your website."
+repository = "https://github.com/64/steam-auth"
+documentation = "https://docs.rs/steam-auth"
+keywords = ["steam", "login", "authentication", "authenticate", "openid"]
+categories = ["authentication", "asynchronous", "network-programming", "web-programming::http-server"]
+
+[dependencies]
+reqwest = "0.9.18"
+url = "1.7.2"
+futures = "0.1.27"
+serde = "1.0.92"
+serde_derive = "1.0.92"
+serde_urlencoded = "0.5.5"
+failure = "0.1.5"
+
+[dev-dependencies]
+simple-server = "0.4.0"
+
+[badges]
+travis-ci = { repository = "64/steam-auth" }
