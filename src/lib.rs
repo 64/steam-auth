@@ -15,7 +15,7 @@
 //! ```rust
 //! # fn main() {
 //! # let auth_response = serde_urlencoded::from_str("openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&openid.mode=id_res&openid.op_endpoint=https%3A%2F%2Fsteamcommunity.com%2Fopenid%2Flogin&openid.claimed_id=https%3A%2F%2Fsteamcommunity.com%2Fopenid%2Fid%2F92345666790633291&openid.identity=https%3A%2F%2Fsteamcommunity.com%2Fopenid%2Fid%2F12333456789000000&openid.return_to=http%3A%2F%2Flocalhost%3A8080%2Fcallback&openid.response_nonce=2019-06-15T00%3A36%3A00Z7nVIS5lDAcZe%2FT0gT4%2BQNQyexyA%3D&openid.assoc_handle=1234567890&openid.signed=signed%2Cop_endpoint%2Cclaimed_id%2Cidentity%2Creturn_to%2Cresponse_nonce%2Cassoc_handle&openid.sig=BK0zC%2F%2FKzERs7N%2BNlDO0aL06%2BBA%3D").unwrap();
-//! /* deserialize query string into auth_response: SteamAuthResponse */
+//! // deserialize query string into auth_response: SteamAuthResponse
 //! match steam_auth::verify_response(&reqwest::Client::new(), auth_response) {
 //!     Ok(id) => println!("Successfully logged in user with STEAMID64: {}", id),
 //!     Err(e) => println!("Login unsuccessful: {}", e),
@@ -25,7 +25,7 @@
 //!
 //! There's also an asynchronous variant on `steam_auth::verify_response_async`.
 //!
-//! See the example server for more details.
+//! See the [example server](https://github.com/64/steam-auth/blob/master/examples/server.rs) for more details.
 
 #[macro_use]
 extern crate serde_derive;

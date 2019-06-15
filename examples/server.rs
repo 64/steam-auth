@@ -26,7 +26,6 @@ fn main() {
             (&Method::GET, "/callback") => {
                 // Parse query string data into auth_resp
                 let form_string = request.uri().query().unwrap();
-                dbg!(form_string);
                 let auth_resp = serde_urlencoded::from_str(form_string).unwrap();
 
                 // Check with the steam servers if the response was valid
