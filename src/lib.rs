@@ -27,10 +27,6 @@ pub(crate) const STEAM_URL: &str = "https://steamcommunity.com/openid/login";
 
 #[derive(Debug, Fail)]
 pub enum Error {
-    #[fail(display = "reqwest error: {}", _0)]
-    #[cfg(feature = "reqwest-09x")]
-    /// There was an error during the verify request
-    Reqwest(reqwest::Error),
     #[fail(display = "bad site or return url: {}", _0)]
     /// The site or return URL was incorrect
     BadUrl(url::ParseError),
@@ -43,6 +39,10 @@ pub enum Error {
     #[fail(display = "failed to parse steam id")]
     /// There was an error parsing the Steam ID returned to the callback
     ParseSteamId,
+    #[fail(display = "reqwest error: {}", _0)]
+    #[cfg(feature = "reqwest-09x")]
+    /// There was an error during the verify request
+    Reqwest(reqwest::Error),
 }
 
 #[cfg(feature = "reqwest-0_9")]

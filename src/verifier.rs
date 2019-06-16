@@ -6,7 +6,6 @@ use futures::{Future, Stream, future::{self, Either}};
 #[derive(Debug, Clone)]
 pub struct Verifier {
     claimed_id: u64,
-    form: SteamAuthResponse,
 }
 
 impl Verifier {
@@ -21,7 +20,7 @@ impl Verifier {
 
             let claimed_id = id_segment.parse::<u64>().map_err(|_| Error::ParseSteamId)?;
 
-            Self { claimed_id, form }
+            Self { claimed_id }
         };
 
         let form_data = dbg!(serde_urlencoded::to_string(form).unwrap()).into_bytes(); // TODO: Unwrap
@@ -29,7 +28,8 @@ impl Verifier {
         let req = http::Request::builder()
             .method(http::Method::POST)
             .uri(STEAM_URL)
-            .form(&verifier.form)
+            .header("Content-Type", "application/x-www-form-urlencoded")
+            .body(form_data)
             .unwrap(); // TODO: Unwrap
 
         Ok((req, verifier))
@@ -65,7 +65,8 @@ impl Verifier {
 
         client
             .post(&req.uri().to_string())
-            .form(req.body())
+            .header("Content-Type", "application/x-www-form-urlencoded")
+            .body(req.body().clone())
             .send()
             .map_err(Error::Reqwest)
             .and_then(|mut response| {
@@ -88,7 +89,8 @@ impl Verifier {
         Either::B(
             client
                 .post(&req.uri().to_string())
-                .form(req.body())
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .body(req.body().clone())
                 .send()
                 .map_err(Error::Reqwest)
                 .and_then(|res| res.into_body().concat2().map_err(Error::Reqwest))

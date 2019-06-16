@@ -7,6 +7,7 @@ fn main() {
     println!("Starting server on localhost:8080");
 
     let redirector = steam_auth::Redirector::new("http://localhost:8080", "/callback").unwrap();
+    let client = reqwest::Client::new();
 
     let server = Server::new(move |request, mut response| {
         match (request.method(), request.uri().path()) {
@@ -28,9 +29,16 @@ fn main() {
                 let qs = request.uri().query().unwrap();
 
                 // Check with the steam servers if the response was valid
-                match steam_auth::Verifier::make_verify_request(&reqwest::Client::new(), qs) {
+                #[cfg(feature = "reqwest-09x")]
+                match steam_auth::Verifier::make_verify_request(&client, qs) {
                     Ok(id) => Ok(response.body(format!("<h1>Success</h1><p>Steam ID: {}</p>", id).as_bytes().to_vec())?),
                     Err(e) => Ok(response.body(format!("<h1>Error</h1><p>Description: {}</p>", dbg!(e)).as_bytes().to_vec())?),
+                }
+
+                #[cfg(not(feature = "reqwest-09x"))]
+                {
+                    // TODO
+                    unimplemented!();
                 }
             }
             (_, _) => {
