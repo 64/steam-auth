@@ -32,13 +32,20 @@ impl Verifier {
     /// Constructs a Verifier and a HTTP request from a query string. You must use the method,
     /// headers, URI and body from the returned `http::Request` struct.
     pub fn from_querystring<S: AsRef<str>>(s: S) -> Result<(http::Request<Vec<u8>>, Self), Error> {
-        let mut form: SteamAuthResponse =
-            serde_urlencoded::from_str(s.as_ref()).map_err(Error::Deserialize)?;
+        let form = serde_urlencoded::from_str(s.as_ref()).map_err(Error::Deserialize)?;
 
-        form.mode = "check_authentication".to_owned();
+        Self::from_parsed(form)
+    }
+
+    /// Constructs a Verifier and a HTTP request directly from the data deserialized from the query
+    /// string. This may be useful if you are using a web framework which offers the ability to
+    /// deserialize data during route matching. You must use the method, headers, URI and body from
+    /// the returned `http::Request` struct.
+    pub fn from_parsed(mut login_data: SteamLoginData) -> Result<(http::Request<Vec<u8>>, Self), Error> {
+        login_data.mode = "check_authentication".to_owned();
 
         let verifier = {
-            let url = url::Url::parse(&form.claimed_id).map_err(|_| Error::ParseSteamId)?;
+            let url = url::Url::parse(&login_data.claimed_id).map_err(|_| Error::ParseSteamId)?;
             let mut segments = url.path_segments().ok_or(Error::ParseSteamId)?;
             let id_segment = segments.next_back().ok_or(Error::ParseSteamId)?;
 
@@ -47,7 +54,7 @@ impl Verifier {
             Self { claimed_id }
         };
 
-        let form_data = serde_urlencoded::to_string(form)
+        let form_data = serde_urlencoded::to_string(login_data)
             .map_err(Error::Serialize)?
             .into_bytes();
 
@@ -137,7 +144,7 @@ impl Verifier {
 }
 
 #[derive(Clone, Deserialize, Serialize, Debug)]
-pub struct SteamAuthResponse {
+pub struct SteamLoginData {
     #[serde(rename = "openid.ns")]
     ns: String,
     #[serde(rename = "openid.mode")]

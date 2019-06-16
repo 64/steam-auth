@@ -1,7 +1,7 @@
 [package]
 name = "steam-auth"
 authors = ["Matt Taylor"]
-version = "0.2.0"
+version = "0.3.0"
 edition = "2018"
 readme = "README.md"
 license = "MIT"

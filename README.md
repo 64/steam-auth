@@ -28,8 +28,9 @@ match Verifier::make_verify_request(&reqwest::Client::new(), querystring) {
 }
 ```
 
-There is also an asynchronous variant: `Verifier::make_verify_request_async` which returns a
-future.
+There is an asynchronous variant: `Verifier::make_verify_request_async` which returns a
+future. You can also deserialize the data into a `SteamLoginData` struct and construct a
+`Verifier` from that if it is more convenient.
 
 If you don't want to depend on request, you'll need to send the HTTP request yourself. See the
 [example server](https://github.com/64/steam-auth/blob/master/examples/server.rs) and the
