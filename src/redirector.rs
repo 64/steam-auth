@@ -2,11 +2,19 @@ use crate::{Error, STEAM_URL};
 use url::Url;
 
 #[derive(Debug, Clone)]
+/// Stores the URL that users should be redirected to.
 pub struct Redirector {
     url: Url,
 }
 
 impl Redirector {
+    /// # Example
+    /// ```
+    /// # use steam_auth::Redirector;
+    /// # fn main() {
+    /// let redirector = Redirector::new("http://localhost:8080", "/callback");
+    /// # }
+    /// ```
     pub fn new<T: AsRef<str>, U: AsRef<str>>(site_url: T, return_url: U) -> Result<Self, Error> {
         let joined = Url::parse(site_url.as_ref())
             .map_err(Error::BadUrl)?
@@ -17,7 +25,6 @@ impl Redirector {
 
         let qs = serde_urlencoded::to_string(&openid).map_err(Error::ParseQueryString)?;
 
-        // TODO: Remove unwrap
         // Shouldn't happen
         let mut url = Url::parse(STEAM_URL).map_err(Error::BadUrl)?;
 
@@ -26,13 +33,17 @@ impl Redirector {
         Ok(Self { url })
     }
 
-    pub fn create_response(&self) -> http::Result<http::Response<()>> {
+    /// Constructs a new HTTP response which redirects the user to the URL, starting the login
+    /// process.
+    pub fn create_response(&self) -> Result<http::Response<()>, Error> {
         http::Response::builder()
             .status(http::StatusCode::FOUND)
             .header("Location", self.url.as_str())
             .body(())
+            .map_err(Error::BuildHttpStruct)
     }
 
+    /// Gets the URL to which users should be redirected.
     pub fn url(&self) -> &Url {
         &self.url
     }

@@ -7,6 +7,8 @@ fn main() {
     println!("Starting server on localhost:8080");
 
     let redirector = steam_auth::Redirector::new("http://localhost:8080", "/callback").unwrap();
+
+    #[cfg(feature = "reqwest-09x")]
     let client = reqwest::Client::new();
 
     let server = Server::new(move |request, mut response| {
@@ -37,7 +39,15 @@ fn main() {
 
                 #[cfg(not(feature = "reqwest-09x"))]
                 {
-                    // TODO
+                    // TODO: Example usage of the API without reqwest
+                    /*
+                    let (req, verifier) = Verifier::from_querystring(qs).unwrap();
+                    // send off req, get back response
+                    match verifier.verify_response(response.body()) {
+                        Ok(steam_id) => (), // got steam id
+                        Err(e) => (), // Auth failure
+                    }
+                    */
                     unimplemented!();
                 }
             }
