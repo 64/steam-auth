@@ -6,7 +6,12 @@ fn main() {
 
     println!("Starting server on localhost:8080");
 
-    let server = Server::new(|request, mut response| {
+    let redirector = steam_auth::Redirector::new("http://localhost:8080", "/callback").unwrap();
+
+    #[cfg(feature = "reqwest-09x")]
+    let client = reqwest::Client::new();
+
+    let server = Server::new(move |request, mut response| {
         match (request.method(), request.uri().path()) {
             (&Method::GET, "/") => {
                 Ok(response.body("
@@ -16,22 +21,34 @@ fn main() {
                 ".as_bytes().to_vec())?)
             }
             (&Method::GET, "/login") => {
-                let redirect_url = steam_auth::get_login_url("http://localhost:8080", "/callback").unwrap();
-
                 // Redirect user to redirect_url
                 response.status(StatusCode::FOUND);
-                response.header("Location", redirect_url.as_str());
+                response.header("Location", redirector.url().as_str());
                 Ok(response.body(Vec::new())?)
             }
             (&Method::GET, "/callback") => {
                 // Parse query string data into auth_resp
-                let form_string = request.uri().query().unwrap();
-                let auth_resp = serde_urlencoded::from_str(form_string).unwrap();
+                let qs = request.uri().query().unwrap();
 
                 // Check with the steam servers if the response was valid
-                match steam_auth::verify_response(&reqwest::Client::new(), auth_resp) {
+                #[cfg(feature = "reqwest-09x")]
+                match steam_auth::Verifier::make_verify_request(&client, qs) {
                     Ok(id) => Ok(response.body(format!("<h1>Success</h1><p>Steam ID: {}</p>", id).as_bytes().to_vec())?),
-                    Err(e) => Ok(response.body(format!("<h1>Error</h1><p>Description: {}</p>", e).as_bytes().to_vec())?),
+                    Err(e) => Ok(response.body(format!("<h1>Error</h1><p>Description: {}</p>", dbg!(e)).as_bytes().to_vec())?),
+                }
+
+                #[cfg(not(feature = "reqwest-09x"))]
+                {
+                    // TODO: Example usage of the API without reqwest
+                    /*
+                    let (req, verifier) = Verifier::from_querystring(qs).unwrap();
+                    // send off req, get back response
+                    match verifier.verify_response(response.body()) {
+                        Ok(steam_id) => (), // got steam id
+                        Err(e) => (), // Auth failure
+                    }
+                    */
+                    unimplemented!();
                 }
             }
             (_, _) => {

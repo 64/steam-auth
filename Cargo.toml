@@ -1,7 +1,7 @@
 [package]
 name = "steam-auth"
 authors = ["Matt Taylor"]
-version = "0.1.0"
+version = "0.2.0"
 edition = "2018"
 readme = "README.md"
 license = "MIT"
@@ -11,14 +11,18 @@ documentation = "https://docs.rs/steam-auth"
 keywords = ["steam", "login", "authentication", "authenticate", "openid"]
 categories = ["authentication", "asynchronous", "network-programming", "web-programming"]
 
+[features]
+reqwest-09x = ["reqwest", "futures"]
+
 [dependencies]
-reqwest = "0.9.18"
+reqwest = { version = "0.9", optional = true }
+futures = { version = "0.1", optional = true }
 url = "1.7.2"
-futures = "0.1.27"
 serde = "1.0.92"
 serde_derive = "1.0.92"
 serde_urlencoded = "0.5.5"
 failure = "0.1.5"
+http = "0.1.17"
 
 [dev-dependencies]
 simple-server = "0.4.0"
