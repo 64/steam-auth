@@ -44,8 +44,8 @@ mod redirector;
 mod verifier;
 
 pub use redirector::Redirector;
-pub use verifier::Verifier;
 pub use verifier::SteamLoginData;
+pub use verifier::Verifier;
 
 pub(crate) const STEAM_URL: &str = "https://steamcommunity.com/openid/login";
 

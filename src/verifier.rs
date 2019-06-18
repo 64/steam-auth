@@ -41,7 +41,9 @@ impl Verifier {
     /// string. This may be useful if you are using a web framework which offers the ability to
     /// deserialize data during route matching. You must use the method, headers, URI and body from
     /// the returned `http::Request` struct.
-    pub fn from_parsed(mut login_data: SteamLoginData) -> Result<(http::Request<Vec<u8>>, Self), Error> {
+    pub fn from_parsed(
+        mut login_data: SteamLoginData,
+    ) -> Result<(http::Request<Vec<u8>>, Self), Error> {
         login_data.mode = "check_authentication".to_owned();
 
         let verifier = {
@@ -80,9 +82,10 @@ impl Verifier {
             })
             .any(|(k, v)| k == "is_valid" && v == "true");
 
-        match is_valid {
-            true => Ok(self.claimed_id),
-            false => Err(Error::AuthenticationFailed),
+        if is_valid {
+            Ok(self.claimed_id)
+        } else {
+            Err(Error::AuthenticationFailed)
         }
     }
 
